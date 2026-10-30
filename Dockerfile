@@ -6,11 +6,14 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /code
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
 COPY alembic.ini .
 COPY migrations ./migrations
 COPY app ./app
+
+RUN useradd --create-home --shell /usr/sbin/nologin appuser && chown -R appuser:appuser /code
+USER appuser
 
 EXPOSE 8000
 
